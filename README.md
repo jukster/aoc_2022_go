@@ -1,1 +1,1 @@
-# aoc_2022_go
+# Advent of Code 2022
