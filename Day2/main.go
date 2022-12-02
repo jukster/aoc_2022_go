@@ -21,7 +21,7 @@ func main() {
 	totalScore := 0
 
 	for _, round := range rounds {
-		totalScore = totalScore + round.eval()
+		totalScore += round.eval()
 	}
 
 	fmt.Println(totalScore)
@@ -39,32 +39,10 @@ func main() {
 
 	for _, round := range rounds2 {
 		round.findMove()
-		totalScore2 = totalScore2 + round.eval()
+		totalScore2 += round.eval()
 	}
 
 	fmt.Println(totalScore2)
-
-}
-
-type round struct {
-	oppoMove string
-	myMove   string
-	outcome  string
-}
-
-func (r *round) eval() int {
-
-	choiceScore := map[string]int{
-		"Rock":     1,
-		"Paper":    2,
-		"Scissors": 3,
-	}
-
-	score := choiceScore[r.myMove]
-
-	score = score + play(r.oppoMove, r.myMove)
-
-	return score
 
 }
 
@@ -120,23 +98,4 @@ func newRoundWithOutcome(oppoMove string, outcome string) round {
 	}
 
 	return round{translate[oppoMove], "", translateOutcome[outcome]}
-}
-
-func (r *round) findMove() {
-
-	moveMap := map[string]string{
-		"Rock-Lose":     "Scissors",
-		"Rock-Draw":     "Rock",
-		"Rock-Win":      "Paper",
-		"Paper-Lose":    "Rock",
-		"Paper-Draw":    "Paper",
-		"Paper-Win":     "Scissors",
-		"Scissors-Lose": "Paper",
-		"Scissors-Draw": "Scissors",
-		"Scissors-Win":  "Rock",
-	}
-
-	key := r.oppoMove + "-" + r.outcome
-
-	r.myMove = moveMap[key]
 }
