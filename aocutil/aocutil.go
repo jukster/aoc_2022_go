@@ -29,7 +29,7 @@ func ReadAndSplit(s *bufio.Scanner) []string {
 }
 
 func OpenFile(f string) *os.File {
-	file, err := os.Open("input.txt")
+	file, err := os.Open(f)
 	if err != nil {
 		log.Fatal(err)
 	}
