@@ -6,20 +6,7 @@ import (
 	"sort"
 )
 
-func main() {
-
-	partTwo := false
-
-	ms := makeMonkeys()
-
-	for _, monkey := range ms {
-		monkey.counter = len(monkey.items)
-	}
-	var msp []*monkey
-
-	for i := range ms {
-		msp = append(msp, &ms[i])
-	}
+func solve(monkeys []monkey, partTwo bool) (productOfTwo int) {
 
 	rounds := 20
 
@@ -27,46 +14,36 @@ func main() {
 		rounds = 10000
 	}
 
+	for _, monkey := range monkeys {
+		monkey.counter = len(monkey.items)
+	}
+	var msp []*monkey
+
+	for i := range monkeys {
+		msp = append(msp, &monkeys[i])
+	}
+
 	for i := 0; i < rounds; i++ {
 
 		playRound(msp, partTwo)
 	}
 
-	sort.Slice(ms, func(i, j int) bool {
-		return ms[i].counter > ms[j].counter
+	sort.Slice(monkeys, func(i, j int) bool {
+		return monkeys[i].counter > monkeys[j].counter
 	})
 
-	fmt.Println(ms[0].counter * ms[1].counter)
+	return monkeys[0].counter * monkeys[1].counter
+}
 
-	fmt.Println("Starting part 2")
+func main() {
 
-	partTwo = true
+	fmt.Println("part 1")
 
-	ms2 := makeMonkeys()
+	fmt.Println(solve(readMonkeys("input.txt"), false))
 
-	for _, monkey := range ms2 {
-		monkey.counter = len(monkey.items)
-	}
-	var msp2 []*monkey
+	fmt.Println("part 2")
 
-	for i := range ms2 {
-		msp2 = append(msp2, &ms2[i])
-	}
-
-	if partTwo {
-		rounds = 10000
-	}
-
-	for i := 0; i < rounds; i++ {
-
-		playRound(msp2, partTwo)
-	}
-
-	sort.Slice(ms2, func(i, j int) bool {
-		return ms2[i].counter > ms2[j].counter
-	})
-
-	fmt.Println(ms2[0].counter * ms2[1].counter)
+	fmt.Println(solve(readMonkeys("input.txt"), true))
 
 }
 
