@@ -4,61 +4,62 @@ import (
 	"fmt"
 	"regexp"
 	"strconv"
-	"strings"
 
 	"github.com/jukster/aocutil"
 )
+
+type folder struct {
+	size     int
+	name     string
+	parent   *folder
+	children []*folder
+}
+
+func (f *folder) getSize() int {
+	totalSize := f.size
+
+	for _, child := range f.children {
+		totalSize += child.getSize()
+	}
+
+	return totalSize
+}
 
 func main() {
 
 	inputRaw := aocutil.ReadFile("input.txt")
 
-	path := []string{}
+	root := folder{0, "/", nil, nil}
 
-	fileList := []file{}
+	folders := []*folder{&root}
 
-	for _, line := range inputRaw {
-		dirUp, enterDir, filename, filesize := processLine(line)
+	currentFolder := folders[0]
+
+	for _, line := range inputRaw[1:] {
+		dirUp, enterDir, filesize := processLine(line)
 
 		if dirUp {
-			if len(path) > 0 {
-				path = path[:len(path)-1]
-			}
+			currentFolder = currentFolder.parent
 			continue
+
 		} else if enterDir != "" {
-			path = append(path, enterDir)
-
+			newFolder := folder{0, enterDir, currentFolder, nil}
+			currentFolder.children = append(currentFolder.children, &newFolder)
+			currentFolder = &newFolder
+			folders = append(folders, &newFolder)
 			continue
-		} else if filename != "" {
-			thisPath := make([]string, len(path))
-			copy(thisPath, path)
-			fileList = append(fileList, file{thisPath, filename, filesize})
-		}
 
-	}
-
-	directories := map[string]int{}
-
-	for _, file := range fileList {
-		for i := range file.path {
-			path := ""
-
-			path = strings.Join(file.path[:i+1], "/")
-
-			if _, ok := directories[path]; !ok {
-				directories[path] = 0
-			}
-
-			directories[path] += file.size
-
+		} else if filesize != 0 {
+			currentFolder.size += filesize
 		}
 	}
 
 	totalForSmallDirs := 0
 
-	for _, value := range directories {
-		if value < 100000 {
-			totalForSmallDirs += value
+	for _, folder := range folders {
+
+		if size := folder.getSize(); size < 100000 {
+			totalForSmallDirs += size
 		}
 	}
 
@@ -66,7 +67,7 @@ func main() {
 
 	fmt.Println("Starting Day 2")
 
-	used := directories["/"]
+	used := folders[0].getSize()
 
 	maxOccupied := 40000000
 
@@ -74,13 +75,15 @@ func main() {
 
 	winnerSize := 0
 
-	for _, size := range directories {
-		usedIfDeleted := used - size
+	for _, folder := range folders {
+		usedIfDeleted := used - folder.getSize()
 
 		if usedIfDeleted < maxOccupied {
 			if usedIfDeleted > biggestAfterDeletion {
+
 				biggestAfterDeletion = usedIfDeleted
-				winnerSize = size
+
+				winnerSize = folder.getSize()
 			}
 
 		}
@@ -91,13 +94,7 @@ func main() {
 
 }
 
-type file struct {
-	path []string
-	name string
-	size int
-}
-
-func processLine(line string) (dirUp bool, enterDir string, filename string, filesize int) {
+func processLine(line string) (dirUp bool, enterDir string, filesize int) {
 
 	patCmdUp := regexp.MustCompile(`^\$\scd\s\.\.`)
 	patEnterDir := regexp.MustCompile(`^\$\scd\s(.+)`)
@@ -105,14 +102,13 @@ func processLine(line string) (dirUp bool, enterDir string, filename string, fil
 
 	if m := patCmdUp.FindAllString(line, -1); len(m) > 0 {
 
-		return true, "", "", 0
+		return true, "", 0
 
 	} else if m := patEnterDir.FindAllStringSubmatch(line, -1); len(m) > 0 {
 
-		return false, m[0][1], "", 0
+		return false, m[0][1], 0
 
 	} else if m := patFil.FindAllStringSubmatch(line, -1); len(m) > 0 {
-		newFileName := m[0][2]
 		newFileSizeS := m[0][1]
 
 		newFileSize, err := strconv.Atoi(newFileSizeS)
@@ -121,8 +117,8 @@ func processLine(line string) (dirUp bool, enterDir string, filename string, fil
 			fmt.Println(fmt.Errorf("conversion failed"))
 		}
 
-		return false, "", newFileName, newFileSize
+		return false, "", newFileSize
 	}
 
-	return false, "", "", 0
+	return false, "", 0
 }
