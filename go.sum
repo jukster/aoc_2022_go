@@ -1,0 +1,4 @@
+github.com/jukster/aoc_2022_go v0.0.0-20221219085634-92379e8c4e5a h1:FAToWjvuxVWCfy3X7oCgh2Lu9dlHgCErpk0/Scfj0PM=
+github.com/jukster/aoc_2022_go v0.0.0-20221219085634-92379e8c4e5a/go.mod h1:09mvEPCOZARmz2Mbx5vsSIXjhonx9hM2mzAjb6Cx+ro=
+golang.org/x/exp v0.0.0-20230108222341-4b8118a2686a h1:tlXy25amD5A7gOfbXdqCGN5k8ESEed/Ee1E5RcrYnqU=
+golang.org/x/exp v0.0.0-20230108222341-4b8118a2686a/go.mod h1:CxIveKay+FTh1D0yPZemJVgC/95VzuuOLq5Qi4xnoYc=

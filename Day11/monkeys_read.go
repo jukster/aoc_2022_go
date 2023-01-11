@@ -4,7 +4,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/jukster/aocutil"
+	"github.com/jukster/aoc_2022_go/aocutil"
 )
 
 func readMonkeys(path string) (monkeys []monkey) {

@@ -5,7 +5,7 @@ import (
 	"regexp"
 	"strconv"
 
-	"github.com/jukster/aocutil"
+	"github.com/jukster/aoc_2022_go/aocutil"
 )
 
 type folder struct {

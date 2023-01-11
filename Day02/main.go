@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 
-	"github.com/jukster/aocutil"
+	"github.com/jukster/aoc_2022_go/aocutil"
 )
 
 func main() {
